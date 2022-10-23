@@ -1,0 +1,77 @@
+---
+title: "Untitled"
+output: html_document
+date: '2022-10-18'
+---
+
+```{r}
+#package e1071 and islr for default data and caret and gmodels and pROC
+```
+
+```{r}
+#actual assignment change numbers in lower questions to actual numbres reference is https://www.rpubs.com/kbabakan/550150
+Mydata <- read.csv("UniversalBank.CSV")
+Index_Train <- createDataPartition(Mydata$Online, p=0.6, list=FALSE)
+Train <- Mydata[Index_Train,]
+Test <- Mydata[-Index_Train,]
+```
+
+```{r}
+#install.packages("pivottabler") library is pivottabler
+#install.packages("reshape") library is reshape
+
+melted.bank = melt(Train,id=c("CreditCard","Personal.Loan"),variable= "Online")
+recast.bank = dcast(melted.bank,CreditCard+Personal.Loan~Online)
+recast.bank[,c(1:2,14)]
+```
+```{r}
+melted.bankc1 = melt(Train,id=c("Personal.Loan"),variable = "Online")
+```
+
+```{r}
+melted.bankc2 = melt(Train,id=c("CreditCard"),variable = "Online")
+```
+
+```{r}
+recast.bankc1=dcast(melted.bankc1,Personal.Loan~Online)
+recast.bankc2=dcast(melted.bankc2,CreditCard~Online)
+Loanline=recast.bankc1[,c(1,13)]
+LoanCC = recast.bankc2[,c(1,14)]
+
+Loanline
+```
+```{r}
+LoanCC
+```
+
+```{r}
+table(Train[,c(14,10)])
+```
+
+```{r}
+table(Train[,c(13,10)])
+```
+
+```{r}
+table(Train[,c(10)])
+
+#i. 96/(96+206)=31.8%
+#ii. 178/(178+124)= 58.9%
+#iii.302/(302+2698)=10.1%
+#iv. 796/(796+1902)=29.5%
+#v. 1626/(1626+1072) = 60.3%
+#vi. 2698/(2698+302) = 89.9%
+```
+
+```{r}
+0.318*0.589*.101*.295*.603*.899
+```
+
+
+```{r}
+naive.Train = Train[,c(10,13:14)]
+naive.Test = Test[,c(10,13:14)]
+naivebayes = naiveBayes(Personal.Loan~.,data=naive.Train)
+naivebayes
+```
+
