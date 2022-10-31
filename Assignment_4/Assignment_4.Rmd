@@ -1,0 +1,46 @@
+---
+title: "Assignment_4"
+output:
+  pdf_document: default
+  html_document: default
+date: '2022-10-30'
+---
+
+```{r}
+#use tidyverse factoextra and islr
+#install.packages("ggplot2")
+#install.packages("factoextra")
+#library(ggplot2)
+#library(factoextra)
+mydata <- read.csv("Pharmaceuticals.CSV")
+head(mydata)
+```
+
+```{r}
+df <- mydata[,c(3,4,5,6,7,8,9,10,11)]
+df <- scale(df)
+distance <- get_dist(df)
+fviz_dist(distance)
+```
+```{r}
+df2 <- df[,c(8,9)]
+k4 <- kmeans(df2, centers = 4, nstart = 25)
+k4$centers
+```
+```{r}
+k4$size
+```
+```{r}
+k4$cluster
+```
+```{r}
+fviz_cluster(k4, data = df2)
+```
+```{r}
+fviz_nbclust(df2, kmeans, method = "wss")
+```
+
+```{r}
+fviz_nbclust(df2, kmeans, method = "silhouette")
+```
+
