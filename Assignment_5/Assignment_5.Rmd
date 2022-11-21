@@ -1,0 +1,117 @@
+---
+title: "Assignment_5"
+output: html_document
+date: '2022-11-21'
+---
+
+```{r}
+#library(knitr)
+#library(cluster)
+#library(factoextra)
+cereals <- read.csv("Cereals.CSV")
+numericdata <- data.frame(cereals[,4:16])
+```
+
+```{r}
+Omit = na.omit(numericdata)
+```
+
+```{r}
+Normalize <- scale(Omit)
+```
+
+```{r}
+distance <- dist(Normalize, method = "euclidian")
+```
+
+```{r}
+clustering_hierarchical = hclust(distance, method = "complete")
+plot(clustering_hierarchical)
+```
+
+```{r}
+round(clustering_hierarchical$height, 3)
+
+```
+
+```{r}
+plot(clustering_hierarchical)
+rect.hclust(clustering_hierarchical, k=4, border = "red")
+```
+
+```{r}
+single = agnes(Normalize, method = "single")
+complete = agnes(Normalize, method = "complete")
+average = agnes(Normalize, method = "average")
+ward = agnes(Normalize, method = "ward")
+```
+
+```{r}
+print(single$ac)
+```
+
+```{r}
+print(complete$ac)
+```
+
+```{r}
+print(average$ac)
+```
+
+```{r}
+#best method
+print(ward$ac)
+```
+
+```{r}
+pltree(ward, cex = 0.6, hang= -1, main = "Agnes-Ward")
+```
+
+```{r}
+HCluster1 <- hclust(distance, method = "ward.D2")
+subgroup <- cutree(HCluster1, k = 4)
+table(subgroup)
+```
+
+```{r}
+cereals <- as.data.frame(cbind(Normalize, subgroup))
+```
+
+```{r}
+fviz_cluster(list(data = Normalize, cluster = subgroup))
+```
+
+```{r}
+Newcereals = numericdata
+Newcereals_omit = na.omit(Newcereals)
+Clust = cbind(Newcereals_omit, subgroup)
+Clust[Clust$subgroup==1,]
+```
+
+```{r}
+#subgroup 1 has the highest rating so it is recomended to choose subgroup 1 as healthy diet cluster
+mean(Clust[Clust$subgroup==1, "rating"])
+```
+```{r}
+mean(Clust[Clust$subgroup==2, "rating"])
+```
+
+```{r}
+mean(Clust[Clust$subgroup==3, "rating"])
+```
+
+```{r}
+mean(Clust[Clust$subgroup==4, "rating"])
+```
+
+```{r}
+# compute divisive hierarchical clustering
+cereals <- read.csv("Cereals.CSV")
+hc_diana <- diana(cereals)
+# Divise coefficient; amount of clustering structure found
+hc_diana$dc
+# plot dendrogram
+pltree(hc_diana, cex = 0.6, hang = -1, main = "Dendrogram of diana")
+```
+
+
