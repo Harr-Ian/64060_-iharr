@@ -1,0 +1,66 @@
+---
+title: "Untitled"
+output: html_document
+date: '2022-12-08'
+---
+
+
+```{r}
+#add more values than just life satisfaction add gdp and population
+library(knitr)
+library(cluster)
+library(factoextra)
+mydata<-read.csv('gdp-vs-happiness.csv')
+```
+
+
+```{r}
+mydata <- na.omit(mydata)
+```
+
+```{r}
+head(mydata)
+```
+
+```{r}
+summary(mydata)
+```
+
+
+
+```{r}
+#Removes every year except 2020
+mydata2 <- mydata[mydata$Year == 2020,]
+mydata2 <- mydata2[,-c(2:3,5:7)]
+head(mydata2)
+```
+
+```{r}
+summary(mydata2)
+```
+
+
+```{r}
+d <- dist(mydata2, method = "euclidean")
+hc1 <- hclust(d, method = "complete" )
+plot(hc1,labels = mydata2$Entity, cex = 0.4, hang = -.1, main = "Dendrogram of Agnes")
+
+```
+```{r}
+plot(hc1,labels = mydata2$Entity, cex= 0.4, hang = -0.1, main = "Dendrogram of Agnes")
+rect.hclust(hc1, k=9, border = 1:9)
+```
+
+```{r}
+#diana
+
+hc_diana <- diana(mydata2$Life.satisfaction.in.Cantril.Ladder..World.Happiness.Report.2022.)
+hc_diana$dc
+
+
+```
+```{r}
+pltree(hc_diana, labels = mydata2$Entity, cex = 0.4, hang = -1, main = "Dendrogram of Diana")
+```
+
+
